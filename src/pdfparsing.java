@@ -21,7 +21,7 @@ public class pdfparsing {
         else{
             document=PDDocument.load(pdfFile);
         }
-        PDFTextStripper pdfTextStripper = new PDFTextStripper();
+        MyPDFTextStripper pdfTextStripper = new MyPDFTextStripper();
         String pageText = pdfTextStripper.getText(document);
         System.out.println(pageText);
     }
