@@ -121,86 +121,6 @@ public class BankStatementPdfParser {
         return "".equals(str.trim());
     }
 
-
-    public static Page getAreaFromPage(InputStream inputStream, int page, float top, float left, float bottom, float right) throws IOException {
-        return getPage(inputStream, page).getArea(top, left, bottom, right);
-    }
-
-    public static Page getPage(InputStream inputStream, int pageNumber) throws IOException {
-        ObjectExtractor oe = null;
-        try {
-            PDDocument document = PDDocument.load(inputStream);
-            oe = new ObjectExtractor(document);
-            Page page = oe.extract(pageNumber);
-            return page;
-        } finally {
-            if (oe != null)
-                oe.close();
-        }
-    }
-
-    public static String getFirstFewLines(InputStream inputStream, Rectangle r) throws IOException {
-        Page page;
-
-        if (r != null) {
-            page = BankStatementPdfParser.getAreaFromPage(inputStream, 1, 0, 0, r.getTop() + 50, r.getRight()+50);
-        } else {
-            page = BankStatementPdfParser.getAreaFromPage(inputStream, 1, 0, 0, 300, 900);
-        }
-        BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-        List<Table> tmpTablesList = bea.extract(page);
-        List<Table> tablesList = new ArrayList<Table>();
-        if (tmpTablesList != null && tmpTablesList.size() > 0) {
-            for (Table table : tmpTablesList) {
-                tablesList.add(table);
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        if(tablesList != null && tablesList.size() > 0)
-            (new CSVWriter()).write(sb, tablesList);
-
-        return sb.toString();
-    }
-
-    /*
-    public static String getBankName(String filepath) throws IOException {
-        String text = null; //PDFParserUtils.getFirstFewLines(filepath, 1);
-        String bankName = null ;
-        //String patternString = ".*DETAILED STATEMENT\\s+(.*)";
-        String patternString = ".*Date,Description,Amount,Type\\s+(.*)";
-        Pattern pattern = Pattern.compile(patternString, Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(text);
-        boolean matches = matcher.find();
-        if (matches) {
-            bankName = "icici";
-        }
-        return bankName;
-    } */
-
-    public static Rectangle getTableCoordinatesfromFirstPage(String filepath) throws IOException {
-        PDDocument pdfDocument = PDDocument.load(new File(filepath));
-        ObjectExtractor extractor = new ObjectExtractor(pdfDocument);
-
-        NurminenDetectionAlgorithm detectionAlgorithm = new NurminenDetectionAlgorithm();
-        Page page = extractor.extract(1);
-        List<Rectangle> r = detectionAlgorithm.detect(page);
-
-        return r.get(0);
-    }
-
-    public static Rectangle getTableCoordinatesfromFirstPage(InputStream inputStream) throws IOException {
-        PDDocument pdfDocument = PDDocument.load(inputStream);
-        ObjectExtractor extractor = new ObjectExtractor(pdfDocument);
-
-        NurminenDetectionAlgorithm detectionAlgorithm = new NurminenDetectionAlgorithm();
-        Page page = extractor.extract(1);
-        List<Rectangle> r = detectionAlgorithm.detect(page);
-
-        return r.get(0);
-    }
-
-
-
     public static Page getAreaFromPage(String path, int page, float top, float left, float bottom, float right) throws IOException {
         return getPage(path, page).getArea(top, left, bottom, right);
     }
@@ -217,29 +137,6 @@ public class BankStatementPdfParser {
             if (oe != null)
                 oe.close();
         }
-    }
-
-    public static String getFirstFewLines(String pdfFilePath, Rectangle r) throws IOException {
-        Page page;
-
-        if (r != null) {
-            page = BankStatementPdfParser.getAreaFromPage(pdfFilePath, 1, 0, 0, r.getTop() + 50, r.getRight()+50);
-        } else {
-            page = BankStatementPdfParser.getAreaFromPage(pdfFilePath, 1, 0, 0, 300, 900);
-        }
-        BasicExtractionAlgorithm bea = new BasicExtractionAlgorithm();
-        List<Table> tmpTablesList = bea.extract(page);
-        List<Table> tablesList = new ArrayList<Table>();
-        if (tmpTablesList != null && tmpTablesList.size() > 0) {
-            for (Table table : tmpTablesList) {
-                tablesList.add(table);
-            }
-        }
-        StringBuilder sb = new StringBuilder();
-        if(tablesList != null && tablesList.size() > 0)
-            (new CSVWriter()).write(sb, tablesList);
-
-        return sb.toString();
     }
 
     public static int count(String string,char ch){
