@@ -5,8 +5,8 @@ import java.io.IOException;
 public class pdfparsing {
     public static void main(String args[]) throws IOException,Exception{
         try{
-            File file = new File("Sample Bank Statement Template.pdf");
-            openPDFDoc(file,"Password123");
+            File file = new File("135582695135_bankStatement_5.pdf");
+            openPDFDoc(file,null);
         }
         catch(Exception e){
 
@@ -21,7 +21,8 @@ public class pdfparsing {
         else{
             document=PDDocument.load(pdfFile);
         }
-        MyPDFTextStripper pdfTextStripper = new MyPDFTextStripper();
+        PDFTextStripper pdfTextStripper = new PDFTextStripper();
+        pdfTextStripper.setWordSeparator(";");
         String pageText = pdfTextStripper.getText(document);
         System.out.println(pageText);
     }
